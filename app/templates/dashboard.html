@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>QFF 2026 · Registrations Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">⚛</span>
+      <div>
+        <strong>Qiskit Fall Fest 2026</strong>
+        <span class="brand-sub">Registrations Dashboard · NC A&amp;T</span>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <span class="generated">Updated {{ generated }}</span>
+      <a class="btn" href="/export.csv">⬇ Export CSV</a>
+      <a class="btn btn-ghost" href="/logout">Log out</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- KPI cards -->
+    <section class="kpi-grid">
+      <div class="kpi">
+        <span class="kpi-label">Total Registrations</span>
+        <span class="kpi-value">{{ stats.total }}</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-label">In-Person</span>
+        <span class="kpi-value">{{ stats.in_person }}</span>
+        <span class="kpi-foot">{{ stats.virtual }} virtual</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-label">Hackathon (Yes)</span>
+        <span class="kpi-value">{{ stats.hackathon_yes }}</span>
+        <span class="kpi-foot">{{ stats.team_matching }} want team matching</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-label">Institutions</span>
+        <span class="kpi-value">{{ stats.institutions_count }}</span>
+        <span class="kpi-foot">avg exp {{ stats.avg_exp }}/10</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-label">Discord Provided</span>
+        <span class="kpi-value">{{ stats.discord_provided }}</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-label">Access / Dietary Needs</span>
+        <span class="kpi-value">{{ stats.accessibility }} / {{ stats.dietary }}</span>
+        <span class="kpi-foot">accessibility / dietary</span>
+      </div>
+    </section>
+
+    <!-- Charts -->
+    <section class="chart-grid">
+      <div class="panel">
+        <h3>Registrations Over Time</h3>
+        <canvas id="timelineChart"></canvas>
+      </div>
+      <div class="panel">
+        <h3>Attendance Format</h3>
+        <canvas id="formatChart"></canvas>
+      </div>
+      <div class="panel">
+        <h3>Days Attending</h3>
+        <canvas id="daysChart"></canvas>
+      </div>
+      <div class="panel">
+        <h3>Experience Level (0–10)</h3>
+        <canvas id="expChart"></canvas>
+      </div>
+      <div class="panel">
+        <h3>Hackathon Interest</h3>
+        <canvas id="hackChart"></canvas>
+      </div>
+      <div class="panel">
+        <h3>How They Heard</h3>
+        <canvas id="heardChart"></canvas>
+      </div>
+    </section>
+
+    <!-- Table -->
+    <section class="panel">
+      <div class="table-head">
+        <h3>All Registrants ({{ stats.total }})</h3>
+        <input type="search" id="tableSearch" placeholder="Search name, email, institution…" />
+      </div>
+      <div class="table-scroll">
+        <table id="regTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Institution</th>
+              <th>Format</th>
+              <th>Days</th>
+              <th>Exp</th>
+              <th>Hackathon</th>
+              <th>Team?</th>
+              <th>Discord</th>
+              <th>Registered</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in rows %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ r.first_name }} {{ r.last_name }}</td>
+              <td>{{ r.email }}</td>
+              <td>{{ r.institution }}</td>
+              <td><span class="tag tag-{{ r.attendance_format }}">{{ r.attendance_format }}</span></td>
+              <td>{{ (r.days_attending or []) | join(', ') }}</td>
+              <td>{{ r.experience_level }}</td>
+              <td>{{ r.hackathon_interest or '—' }}</td>
+              <td>{{ 'Yes' if r.team_matching else '—' }}</td>
+              <td>{{ r.discord_username or '—' }}</td>
+              <td>{{ (r.created_at or '')[:10] }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script id="stats-data" type="application/json">{{ stats | tojson }}</script>
+  <script src="/static/dashboard.js"></script>
+</body>
+</html>

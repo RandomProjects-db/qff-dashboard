@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>QFF 2026 · Dashboard Login</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body class="login-body">
+  <main class="login-card">
+    <div class="login-logo">⚛</div>
+    <h1>Qiskit Fall Fest 2026</h1>
+    <p class="login-sub">Registrations Dashboard · NC A&amp;T</p>
+    {% if error %}
+    <div class="login-error">Incorrect password. Try again.</div>
+    {% endif %}
+    <form method="post" action="/login">
+      <label for="password">Access password</label>
+      <input type="password" id="password" name="password" autocomplete="current-password" autofocus required />
+      <button type="submit">Enter dashboard</button>
+    </form>
+    <p class="login-foot">Authorized organizers only.</p>
+  </main>
+</body>
+</html>
